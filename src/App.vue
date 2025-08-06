@@ -92,7 +92,6 @@ export default {
   components: {MapPin, Sunrise, Sunset, Wind, Droplets, CloudRain, ThermometerSun, X},
 
   setup() {
-    const API_KEY = 'aeb2957778eb3246138ec4e098bae748';
     const weatherData = ref(null);
     const cityName = {
       Seoul: '서울',
@@ -180,7 +179,8 @@ export default {
     // 날씨 API 호출 함수
     const weatherUrl = async (lat, lon) => {
       try {
-        const Url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=kr`;
+        console.log(import.meta.env.VITE_API_KEY);
+        const Url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${import.meta.env.VITE_API_KEY}&units=metric&lang=kr`;
         const response = await axios.get(Url);
         weatherData.value = response.data;
         weatherEtc.value.feelsLike = response.data.main?.feels_like ?? null;
@@ -197,7 +197,7 @@ export default {
     //시간대별 날씨
     const getForecast = async (lat, lon) => {
       try {
-      const Url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=kr`;
+      const Url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${import.meta.env.VITE_API_KEY}&units=metric&lang=kr`;
       const response = await axios.get(Url);
       hourForecast.value = response.data.list.slice(0, 10);
       } catch (error) {
@@ -225,7 +225,7 @@ export default {
         //getCurrentPosition은 인자를 3개까지만 사용 가능!(성공,실패,옵션 순으로 들어있음)
         async (position) => {
           const { latitude: lat, longitude: lon } = position.coords;
-          console.log(`위도 ${lat}, 경도 ${lon}`);
+          //console.log(`위도 ${lat}, 경도 ${lon}`);
           await weatherUrl(lat, lon);
         },
         fail,
@@ -265,7 +265,7 @@ export default {
       searchResults.value = [];
 
       try{
-        const url = `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(searchQuary.value)}&limit=5&appid=${API_KEY}`;
+        const url = `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(searchQuary.value)}&limit=5&appid=${import.meta.env.VITE_API_KEY}`;
         const response = await axios.get(url);
         if( response.data.length === 0 ){
           searchError.value = '검색 결과가 없습니다. 다른 도시 이름을 입력하세요';
